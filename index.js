@@ -105,12 +105,17 @@ app.get('/expense_tracker', (req, res) => {
   res.json(rows);
 });
 
+app.get('/stats/by-category', (req, res) => {
+  const rows = db
+    .prepare(`
+      SELECT category, SUM(amount) AS total
+      FROM expenses
+      GROUP BY category
+    `)
+    .all();
 
-
-
-
-
-
+  res.json(rows);
+});
 
 
 
