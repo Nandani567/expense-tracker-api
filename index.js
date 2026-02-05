@@ -22,10 +22,10 @@ app.post('/expense_tracker', (req, res) => {
 });
 
 // Read
-app.get('/expense_tracker', (req, res) => {
-  const rows = db.prepare(`SELECT * FROM expenses`).all();
-  res.json(rows);
-});
+// app.get('/expense_tracker', (req, res) => {
+//   const rows = db.prepare(`SELECT * FROM expenses`).all();
+//   res.json(rows);
+// });
 
 // Update
 
@@ -67,6 +67,51 @@ const row = db
 
   res.json(row);
 });
+
+// Add filtering 
+
+app.get('/expense_tracker', (req, res) => {
+  const { category, min, max, from, to } = req.query;
+
+  let query = 'SELECT * FROM expenses WHERE 1=1';
+  const params = [];
+
+  if (category) {
+    query += ' AND category = ?';
+    params.push(category);
+  }
+
+  if (min) {
+    query += ' AND amount >= ?';
+    params.push(Number(min));
+  }
+
+  if (max) {
+    query += ' AND amount <= ?';
+    params.push(Number(max));
+  }
+
+  if (from) {
+    query += ' AND created_at >= ?';
+    params.push(from);
+  }
+
+  if (to) {
+    query += ' AND created_at <= ?';
+    params.push(to);
+  }
+
+  const rows = db.prepare(query).all(...params);
+  res.json(rows);
+});
+
+
+
+
+
+
+
+
 
 
 
