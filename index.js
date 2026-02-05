@@ -53,7 +53,20 @@ app.delete('/expense_tracker/:id', (req, res) => {
   res.json({ message: 'Expense deleted successfully' });
 });
 
+// Get by ID 
 
+app.get('/expense_tracker/:id', (req, res) => {
+  const { id } = req.params;
+const row = db
+  .prepare('SELECT * FROM expenses WHERE id = ?')
+    .get(id);
+
+  if (!row) {
+    return res.status(404).json({ error: 'Expense not found' });
+  }
+
+  res.json(row);
+});
 
 
 
