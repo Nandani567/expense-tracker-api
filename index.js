@@ -125,6 +125,35 @@ app.get('/expense_tracker/stats/weekly', (req, res) => {
   });
 });
 
+app.get('/expense_tracker/stats/day',(req,res)=>{
+  const {day} = req.query;
+  if(!day) return res.status(400).json({error:'Day query parameter is required'})
+
+    const row = db
+    .prepare(`SELECT SUM(amount) AS total from expenses WHERE created_at LIKE ?`)
+    .get(`${day}%`);
+
+     res.json({ total: row.total || 0 });
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
